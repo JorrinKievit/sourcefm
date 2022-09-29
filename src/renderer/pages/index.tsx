@@ -12,6 +12,7 @@ import {
   Stack,
   Button,
   ButtonGroup,
+  useToast,
 } from '@chakra-ui/react';
 import { getAllGames } from 'main/source/games';
 import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
@@ -28,6 +29,7 @@ const IndexPage: FC = () => {
   const store = getStore();
   const games = getAllGames();
   const currentGameId = store.get('current_game');
+  const toast = useToast();
   const [status, setStatus] = useState(STATUS.IDLE);
   const [currentGame, setCurrentGame] = useState<number>(currentGameId);
   const [tracks, setTracks] = useState(
@@ -75,12 +77,20 @@ const IndexPage: FC = () => {
 
     window.electron.ipcRenderer.on('start-files-injection-done', () => {
       setStatus(STATUS.WORKING);
+      toast({
+        title: 'Imported into the game!',
+        description: 'Make sure to type "exec source" in the console!',
+        status: 'info',
+        duration: null,
+        isClosable: true,
+        position: 'top-right',
+      });
     });
 
     window.electron.ipcRenderer.on('track-loaded', (trackIndex) => {
       SetLoadedTrack(trackIndex as number);
     });
-  }, [store, currentGameId]);
+  }, [store, currentGameId, toast]);
 
   return (
     <Stack gap={4}>
@@ -137,6 +147,7 @@ const IndexPage: FC = () => {
           <YoutubeImport gameId={currentGameId} />
           <Button
             colorScheme={
+              // eslint-disable-next-line no-nested-ternary
               status === STATUS.IDLE
                 ? 'green'
                 : status === STATUS.SEARCHING
@@ -144,13 +155,16 @@ const IndexPage: FC = () => {
                 : 'red'
             }
             onClick={status === STATUS.IDLE ? handleStart : handleStop}
-            disabled={status === STATUS.SEARCHING ? true : false}
+            disabled={status === STATUS.SEARCHING}
           >
-            {status === STATUS.IDLE
-              ? 'Start'
-              : status === STATUS.SEARCHING
-              ? 'Searching'
-              : 'Stop'}
+            {
+              // eslint-disable-next-line no-nested-ternary
+              status === STATUS.IDLE
+                ? 'Start'
+                : status === STATUS.SEARCHING
+                ? 'Searching'
+                : 'Stop'
+            }
           </Button>
         </ButtonGroup>
       </Flex>

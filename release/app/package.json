@@ -15,6 +15,7 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
     "registry-js": "^1.15.1",
     "steam-game-path": "^2.2.0"
   }

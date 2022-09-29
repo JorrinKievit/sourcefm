@@ -14,7 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import fs from 'fs';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { cleanUp, resolveHtmlPath } from './util';
 
 import './ipc/index';
 import { getAllGames } from './source/games';
@@ -141,3 +141,7 @@ app
     });
   })
   .catch(console.log);
+
+app.on('will-quit', () => {
+  cleanUp();
+});
