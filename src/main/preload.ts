@@ -4,7 +4,8 @@ export type Channels =
   | 'import-file'
   | 'start-files-injection'
   | 'import-youtube'
-  | 'clean-up';
+  | 'clean-up'
+  | 'manage-track';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -28,6 +29,14 @@ contextBridge.exposeInMainWorld('electron', {
     },
     cleanUp(channel: 'clean-up'): void {
       ipcRenderer.send(channel);
+    },
+    manageTrack(
+      channel: 'manage-track',
+      type: 'remove' | 'edit',
+      trackId: number,
+      trackName?: string
+    ): void {
+      ipcRenderer.send(channel, type, trackId, trackName);
     },
     on(channel: Channels, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
