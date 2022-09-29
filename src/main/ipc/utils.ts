@@ -35,7 +35,7 @@ export const updateStoreTracks = (
         name: fileName,
         path: outputPath,
         tags: fileName.split(' '),
-        gameId: gameId,
+        gameId,
       })
     );
   } else {
@@ -43,7 +43,7 @@ export const updateStoreTracks = (
       name: fileName,
       path: outputPath,
       tags: fileName.split(' '),
-      gameId: gameId,
+      gameId,
     };
     store.set('tracks', tracks);
   }

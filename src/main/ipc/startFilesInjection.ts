@@ -1,10 +1,10 @@
 import { ipcMain } from 'electron';
-import { writeSourceCfg, writeTracklistCfg } from '../source/cfgWriter';
-import { store } from '../store';
 import child_process from 'child_process';
 import fs from 'fs';
+import { writeSourceCfg, writeTracklistCfg } from '../source/cfgWriter';
+import { store } from '../store';
 
-var watchConfigFileForChanges: ReturnType<typeof setInterval>;
+let watchConfigFileForChanges: ReturnType<typeof setInterval>;
 
 ipcMain.on('start-files-injection', async (event, gameId) => {
   const settings = store.get('settings');
@@ -21,15 +21,12 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
   }
 
   const isGameRunning = setInterval(() => {
-    child_process.exec('tasklist', (err, stdout, stderr) => {
+    child_process.exec('tasklist', (_, stdout) => {
       if (stdout.match(/csgo.exe/g)) {
-        console.log('game found!');
         clearInterval(isGameRunning);
         writeSourceCfg(gameId);
         writeTracklistCfg(gameId);
         event.sender.send('start-files-injection-done');
-      } else {
-        console.log('game not found');
       }
     });
   }, 5000);
@@ -39,13 +36,10 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
     const relayPath = `${settings.steam_path}\\userdata\\${steamId}\\730\\local\\cfg\\source_relay.cfg`;
     try {
       const file = fs.readFileSync(relayPath);
-      if (file) console.log('file found');
       const regex = /bind\s+"(=)"\s+"(.*?)"/g;
       const matches = file.toString().match(regex);
 
       fs.unlinkSync(relayPath);
-
-      console.log(matches);
 
       if (matches) {
         const trackIndex = parseInt(
@@ -54,8 +48,6 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
         );
         const tracks = store.get('tracks');
         const track = tracks.find((_t, i) => i === trackIndex - 1);
-
-        console.log(trackIndex, track);
 
         event.sender.send('track-loaded', trackIndex - 1);
 

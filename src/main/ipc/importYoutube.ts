@@ -2,13 +2,26 @@ import { ipcMain } from 'electron';
 import ytdl from 'ytdl-core';
 import { convertToWavAndInsert, updateStoreTracks } from './utils';
 
+const getYoutubeVideoName = async (
+  url: string,
+  event: Electron.IpcMainEvent
+) => {
+  try {
+    const info = await ytdl.getInfo(url);
+    return info.videoDetails.title;
+  } catch (e) {
+    event.sender.send('toast', 'error', 'Failed to retrieve YouTube video');
+    return null;
+  }
+};
+
 ipcMain.on(
   'import-youtube',
   async (event, file: { url: string; gameId: number }) => {
     const fileName = await getYoutubeVideoName(file.url, event);
 
     if (fileName) {
-      let outputPath = `${process.cwd()}\\tracks\\${
+      const outputPath = `${process.cwd()}\\tracks\\${
         file.gameId
       }\\${fileName}.wav`;
 
@@ -30,16 +43,3 @@ ipcMain.on(
     }
   }
 );
-
-const getYoutubeVideoName = async (
-  url: string,
-  event: Electron.IpcMainEvent
-) => {
-  try {
-    const info = await ytdl.getInfo(url);
-    return info.videoDetails.title;
-  } catch (e) {
-    event.sender.send('toast', 'error', 'Failed to retrieve YouTube video');
-    return null;
-  }
-};
