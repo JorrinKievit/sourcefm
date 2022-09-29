@@ -10,7 +10,7 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
-import React, { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 
 interface YoutubeImportProps {
   gameId: number;

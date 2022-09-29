@@ -1,5 +1,5 @@
 import { Flex, Heading, Link, Spacer } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { usePageData } from 'renderer/utils/PageHelper';
 

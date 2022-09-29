@@ -9,9 +9,8 @@ import {
   Flex,
   Spacer,
 } from '@chakra-ui/react';
-import React, { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { getStore } from 'renderer/utils/store';
-import { Link as RouterLink } from 'react-router-dom';
 
 const SettingsPage: FC = () => {
   const store = getStore();
