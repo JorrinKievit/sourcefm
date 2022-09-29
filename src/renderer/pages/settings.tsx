@@ -10,7 +10,7 @@ import {
   Spacer,
 } from '@chakra-ui/react';
 import { ChangeEvent, FC, useState } from 'react';
-import { getStore } from 'renderer/utils/store';
+import { getStore } from '../utils/store';
 
 const SettingsPage: FC = () => {
   const store = getStore();

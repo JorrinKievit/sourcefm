@@ -14,10 +14,10 @@ import {
   ButtonGroup,
   useToast,
 } from '@chakra-ui/react';
-import { getAllGames } from 'main/source/games';
 import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
-import YoutubeImport from 'renderer/components/YoutubeImport';
-import { getStore } from 'renderer/utils/store';
+import { getAllGames } from '../../main/source/games';
+import YoutubeImport from '../components/YoutubeImport';
+import { getStore } from '../utils/store';
 
 enum STATUS {
   IDLE,
