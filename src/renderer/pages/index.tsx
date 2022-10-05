@@ -87,8 +87,9 @@ const IndexPage: FC = () => {
     window.electron.ipcRenderer.on('start-files-injection-done', () => {
       setStatus(STATUS.WORKING);
       toast({
-        title: 'Imported into the game!',
-        description: 'Make sure to type "exec source" in the console!',
+        title: 'Imported into the game',
+        description:
+          'Make sure to type "exec sourcefm" in the console to load the music player!',
         status: 'info',
         duration: null,
         isClosable: true,
