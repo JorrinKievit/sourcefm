@@ -7,6 +7,10 @@ The current supported games are:
 - CS:GO
 
 ## Demo
+TODO
+
+## Credits
+This project is heavily inspired by [Source Live Audio Mixer (SLAM)](https://github.com/SilentSys/SLAM).
 
 ## Starting Development
 
@@ -27,5 +31,3 @@ npm run package
 ## Maintainers
 
 - [Jorrin Kievit](https://github.com/JorrinKievit)
-
-## License
