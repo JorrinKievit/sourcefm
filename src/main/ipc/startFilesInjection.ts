@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import child_process from 'child_process';
 import fs from 'fs';
-import { writeSourceCfg, writeTracklistCfg } from '../source/cfgWriter';
+import { writeSourceFMCfg, writeTracklistCfg } from '../source/cfgWriter';
 import { store } from '../store';
 
 let watchConfigFileForChanges: ReturnType<typeof setInterval>;
@@ -24,7 +24,7 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
     child_process.exec('tasklist', (_, stdout) => {
       if (stdout.match(/csgo.exe/g)) {
         clearInterval(isGameRunning);
-        writeSourceCfg(gameId);
+        writeSourceFMCfg(gameId);
         writeTracklistCfg(gameId);
         event.sender.send('start-files-injection-done');
       }
@@ -33,7 +33,7 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
 
   // look for new bind being set aka track being loaded
   watchConfigFileForChanges = setInterval(() => {
-    const relayPath = `${settings.steam_path}\\userdata\\${steamId}\\730\\local\\cfg\\source_relay.cfg`;
+    const relayPath = `${settings.steam_path}\\userdata\\${steamId}\\730\\local\\cfg\\sourcefm_relay.cfg`;
     try {
       const file = fs.readFileSync(relayPath);
       const regex = /bind\s+"(=)"\s+"(.*?)"/g;

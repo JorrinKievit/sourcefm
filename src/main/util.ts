@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { store } from './store';
 
-const FILES = ['source.cfg', 'source_tracklist.cfg'];
+const FILES = ['sourcefm.cfg', 'sourcefm_tracklist.cfg'];
 
 export function resolveHtmlPath(htmlFileName: string) {
   if (process.env.NODE_ENV === 'development') {

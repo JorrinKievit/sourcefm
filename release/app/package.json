@@ -1,7 +1,7 @@
 {
-  "name": "source-player",
+  "name": "sourcefm",
   "version": "0.0.1",
-  "description": "A CSGO Music player",
+  "description": "A music player for source based games",
   "license": "MIT",
   "author": {
     "name": "Jorrin Kievit",

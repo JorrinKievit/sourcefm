@@ -22,5 +22,5 @@ export const store = new Store<StoreSchema>({
     current_game: 730,
     tracks: [],
   },
-  name: 'source-player-store',
+  name: 'sourcefm-store',
 });
