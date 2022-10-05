@@ -1,6 +1,12 @@
-# CSGO Music player
+# SourceFM
 
 Add songs by importing audio files or YouTube links and start playing them in-game!
+
+The current supported games are:
+
+- CS:GO
+
+## Demo
 
 ## Starting Development
 

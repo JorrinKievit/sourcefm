@@ -1,5 +1,5 @@
 {
-  "description": "A CSGO Music player",
+  "description": "A music player for source based games",
   "license": "MIT",
   "author": {
     "name": "Jorrin Kievit",
@@ -166,8 +166,8 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "SourcePlayer",
-    "appId": "org.erb.SourcePlayer",
+    "productName": "SourceFM",
+    "appId": "org.erb.SourceFM",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
