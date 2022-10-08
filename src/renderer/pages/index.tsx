@@ -13,29 +13,28 @@ import {
   Button,
   ButtonGroup,
   useToast,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
+import EditTrack from 'renderer/components/EditTrack';
+import { STATUS } from 'renderer/types';
 import { getAllGames } from '../../main/source/games';
 import YoutubeImport from '../components/YoutubeImport';
 import { getStore } from '../utils/store';
-
-enum STATUS {
-  IDLE,
-  SEARCHING,
-  WORKING,
-}
 
 const IndexPage: FC = () => {
   const store = getStore();
   const games = getAllGames();
   const currentGameId = store.get('current_game');
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [status, setStatus] = useState(STATUS.IDLE);
   const [currentGame, setCurrentGame] = useState<number>(currentGameId);
   const [tracks, setTracks] = useState(
-    store.get('tracks').filter((track) => track.gameId === currentGameId)
+    store.get('tracks')[currentGameId] || []
   );
   const [loadedTrack, SetLoadedTrack] = useState<number | undefined>(undefined);
+  const [selectedTrack, SetSelectedTrack] = useState<number>(-1);
 
   const inputFile = useRef<HTMLInputElement | null>(null);
 
@@ -54,6 +53,11 @@ const IndexPage: FC = () => {
     }
   };
 
+  const handleOpenEditTrack = (trackId: number) => {
+    SetSelectedTrack(trackId);
+    onOpen();
+  };
+
   const handleStart = () => {
     setStatus(STATUS.SEARCHING);
     window.electron.ipcRenderer.startFilesInjection(
@@ -70,9 +74,7 @@ const IndexPage: FC = () => {
 
   useEffect(() => {
     window.electron.ipcRenderer.on('update-tracks', () => {
-      setTracks(
-        store.get('tracks').filter((track) => track.gameId === currentGameId)
-      );
+      setTracks(store.get('tracks')[currentGameId] || []);
     });
 
     window.electron.ipcRenderer.on('start-files-injection-done', () => {
@@ -94,82 +96,105 @@ const IndexPage: FC = () => {
   }, [store, currentGameId, toast]);
 
   return (
-    <Stack gap={4}>
-      <Flex align="center" gap={4}>
-        <Text>Game:</Text>
-        <Select value={currentGame} onChange={handleGameChange}>
-          {games.map((game) => (
-            <option key={game.id} value={game.id}>
-              {game.name}
-            </option>
-          ))}
-        </Select>
-      </Flex>
-      <TableContainer
-        border="1px"
-        borderRadius="12px"
-        borderColor="chakra-border-color"
-        maxH={300}
-        overflow="auto"
-      >
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Loaded</Th>
-              <Th>Track</Th>
-              <Th>Tags</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {tracks.map((track, index) => (
-              <Tr key={track.name}>
-                <Td>{loadedTrack === index ? 'Yes' : 'No'}</Td>
-                <Td>{track.name}</Td>
-                <Td>{track.tags?.join(',')}</Td>
-              </Tr>
+    <>
+      <Stack gap={4}>
+        <Flex align="center" gap={4}>
+          <Text>Game:</Text>
+          <Select value={currentGame} onChange={handleGameChange}>
+            {games.map((game) => (
+              <option key={game.id} value={game.id}>
+                {game.name}
+              </option>
             ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          </Select>
+        </Flex>
+        <TableContainer
+          border="1px"
+          borderRadius="12px"
+          borderColor="chakra-border-color"
+          maxH={300}
+          overflow="auto"
+        >
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Loaded</Th>
+                <Th>Track</Th>
+                <Th>Tags</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {tracks.map((track, index) => (
+                <Tr
+                  key={track.name}
+                  _hover={{
+                    background: 'gray.700',
+                    cursor: 'pointer',
+                  }}
+                  onClick={(e) =>
+                    status !== STATUS.IDLE
+                      ? e.preventDefault()
+                      : handleOpenEditTrack(index)
+                  }
+                >
+                  <Td>{loadedTrack === index ? 'Yes' : 'No'}</Td>
+                  <Td>{track.name}</Td>
+                  <Td>{track.tags?.join(',')}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
 
-      <Flex>
-        <ButtonGroup>
-          <Button colorScheme="teal" onClick={() => inputFile.current?.click()}>
-            Import
-          </Button>
-          <input
-            type="file"
-            id="file"
-            accept="audio/*"
-            ref={inputFile}
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-          />
-          <YoutubeImport gameId={currentGameId} />
-          <Button
-            colorScheme={
-              // eslint-disable-next-line no-nested-ternary
-              status === STATUS.IDLE
-                ? 'green'
-                : status === STATUS.SEARCHING
-                ? 'purple'
-                : 'red'
-            }
-            onClick={status === STATUS.IDLE ? handleStart : handleStop}
-            disabled={status === STATUS.SEARCHING}
-          >
-            {
-              // eslint-disable-next-line no-nested-ternary
-              status === STATUS.IDLE
-                ? 'Start'
-                : status === STATUS.SEARCHING
-                ? 'Searching'
-                : 'Stop'
-            }
-          </Button>
-        </ButtonGroup>
-      </Flex>
-    </Stack>
+        <Flex>
+          <ButtonGroup>
+            <Button
+              colorScheme="teal"
+              onClick={() => inputFile.current?.click()}
+              disabled={status !== STATUS.IDLE}
+            >
+              Import
+            </Button>
+            <input
+              type="file"
+              id="file"
+              accept="audio/*"
+              ref={inputFile}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+            <YoutubeImport gameId={currentGameId} status={status} />
+            <Button
+              colorScheme={
+                // eslint-disable-next-line no-nested-ternary
+                status === STATUS.IDLE
+                  ? 'green'
+                  : status === STATUS.SEARCHING
+                  ? 'purple'
+                  : 'red'
+              }
+              onClick={status === STATUS.IDLE ? handleStart : handleStop}
+              disabled={status === STATUS.SEARCHING}
+            >
+              {
+                // eslint-disable-next-line no-nested-ternary
+                status === STATUS.IDLE
+                  ? 'Start'
+                  : status === STATUS.SEARCHING
+                  ? 'Searching'
+                  : 'Stop'
+              }
+            </Button>
+          </ButtonGroup>
+        </Flex>
+      </Stack>
+      <EditTrack
+        isOpen={isOpen}
+        onClose={onClose}
+        trackId={selectedTrack}
+        gameId={currentGame}
+      />
+    </>
   );
 };
 

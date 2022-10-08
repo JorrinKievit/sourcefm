@@ -18,6 +18,13 @@ declare global {
           gameId: number
         ): void;
         cleanUp(channel: 'clean-up'): void;
+        manageTrack(
+          channel: 'manage-track',
+          type: 'remove' | 'edit',
+          gameId: number,
+          trackId: number,
+          trackName?: string
+        ): void;
         on(
           channel: string,
           func: (...args: unknown[]) => void

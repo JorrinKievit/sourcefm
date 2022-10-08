@@ -46,7 +46,7 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
           matches[0].split(' ')[2].replace('"', ''),
           10
         );
-        const tracks = store.get('tracks');
+        const tracks = store.get('tracks')[gameId];
         const track = tracks.find((_t, i) => i === trackIndex - 1);
 
         event.sender.send('track-loaded', trackIndex - 1);

@@ -11,12 +11,14 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { ChangeEvent, FC, useState } from 'react';
+import { STATUS } from 'renderer/types';
 
 interface YoutubeImportProps {
   gameId: number;
+  status: STATUS;
 }
 
-const YoutubeImport: FC<YoutubeImportProps> = ({ gameId }) => {
+const YoutubeImport: FC<YoutubeImportProps> = ({ gameId, status }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [value, setValue] = useState('');
 
@@ -34,7 +36,11 @@ const YoutubeImport: FC<YoutubeImportProps> = ({ gameId }) => {
 
   return (
     <>
-      <Button colorScheme="red" onClick={onOpen}>
+      <Button
+        colorScheme="red"
+        onClick={onOpen}
+        disabled={status !== STATUS.IDLE}
+      >
         YT Import
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>

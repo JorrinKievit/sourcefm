@@ -1,6 +1,5 @@
 export default class Track {
   public name: string;
-  public gameId: number;
   public tags: string[];
   public hotkey?: string;
   public volume? = 100;
@@ -10,7 +9,6 @@ export default class Track {
 
   constructor(
     name: string,
-    gameId: number,
     tags: string[],
     hotkey: string,
     startPos: number,
@@ -18,7 +16,6 @@ export default class Track {
     path: string
   ) {
     this.name = name;
-    this.gameId = gameId;
     this.tags = tags;
     this.hotkey = hotkey;
     this.startPos = startPos;

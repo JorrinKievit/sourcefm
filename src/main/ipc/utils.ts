@@ -22,20 +22,17 @@ export const updateStoreTracks = (
   outputPath: string,
   event: Electron.IpcMainEvent
 ) => {
-  const tracks = store.get('tracks');
+  const tracks = store.get('tracks')[gameId];
 
-  const existingTrack = tracks.find(
-    (t) => t.name === fileName && t.gameId === gameId
-  );
+  const existingTrack = tracks.find((t) => t.name === fileName);
 
   if (!existingTrack) {
     store.set(
-      'tracks',
+      `tracks.${gameId}`,
       tracks.concat({
         name: fileName,
         path: outputPath,
         tags: fileName.split(' '),
-        gameId,
       })
     );
   } else {
@@ -43,7 +40,6 @@ export const updateStoreTracks = (
       name: fileName,
       path: outputPath,
       tags: fileName.split(' '),
-      gameId,
     };
     store.set('tracks', tracks);
   }

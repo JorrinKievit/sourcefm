@@ -2,6 +2,10 @@ import Store from 'electron-store';
 import { getGamePath } from 'steam-game-path';
 import Track from './source/Track';
 
+interface Tracks {
+  [key: number]: Track[];
+}
+
 export interface StoreSchema {
   settings: {
     csgo_path: string;
@@ -9,7 +13,7 @@ export interface StoreSchema {
     play_button: string;
   };
   current_game: number;
-  tracks: Track[];
+  tracks: Tracks;
 }
 
 export const store = new Store<StoreSchema>({
@@ -20,7 +24,7 @@ export const store = new Store<StoreSchema>({
       play_button: 'x',
     },
     current_game: 730,
-    tracks: [],
+    tracks: {},
   },
   name: 'sourcefm-store',
 });

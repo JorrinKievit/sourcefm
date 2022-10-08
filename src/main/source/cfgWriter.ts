@@ -3,7 +3,7 @@ import { store } from '../store';
 import { getAllGames } from './games';
 
 export const writeSourceFMCfg = (gameId: number) => {
-  const tracks = store.get('tracks').filter((track) => track.gameId === gameId);
+  const tracks = store.get('tracks')[gameId];
   const game = getAllGames().find((val) => val.id === gameId);
   const settings = store.get('settings');
 
@@ -50,7 +50,7 @@ export const writeSourceFMCfg = (gameId: number) => {
 };
 
 export const writeTracklistCfg = (gameId: number) => {
-  const tracks = store.get('tracks').filter((track) => track.gameId === gameId);
+  const tracks = store.get('tracks')[gameId];
   const game = getAllGames().find((val) => val.id === gameId);
   const settings = store.get('settings');
 
