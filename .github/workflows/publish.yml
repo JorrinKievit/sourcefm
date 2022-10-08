@@ -20,13 +20,13 @@ jobs:
 
     steps:
       - name: Checkout git repo
-        uses: actions/checkout@v2.1.0
-        with:
-          file-name: ./release/app/package.json
-        
+        uses: actions/checkout@v1
+
       - name: Check if version has been updated
         id: check
-        uses: EndBug/version-check@v1
+        uses: EndBug/version-check@v2.1.0
+        with:
+          file-name: ./release/app/package.json
 
       - name: Install Node and NPM
         if: steps.check.outputs.changed == 'true'
@@ -34,7 +34,7 @@ jobs:
         with:
           node-version: 16
           cache: npm
-  
+
       - name: Install dependencies
         if: steps.check.outputs.changed == 'true'
         run: |
