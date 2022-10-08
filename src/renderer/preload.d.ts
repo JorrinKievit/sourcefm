@@ -21,6 +21,7 @@ declare global {
         manageTrack(
           channel: 'manage-track',
           type: 'remove' | 'edit',
+          gameId: number,
           trackId: number,
           trackName?: string
         ): void;

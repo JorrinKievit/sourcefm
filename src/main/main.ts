@@ -18,6 +18,7 @@ import { cleanUp, resolveHtmlPath } from './util';
 
 import './ipc/index';
 import { getAllGames } from './source/games';
+import { store } from './store';
 
 class AppUpdater {
   constructor() {
@@ -71,7 +72,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetPath('icon.ico'),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -143,6 +144,10 @@ app
       fs.mkdirSync(`${process.cwd()}\\tracks\\${game.id}`, {
         recursive: true,
       });
+      const tracks = store.get('tracks');
+      if (!tracks[game.id]) {
+        store.set(`tracks.${game.id}`, []);
+      }
     });
   })
   .catch(console.log);

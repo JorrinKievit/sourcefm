@@ -18,11 +18,17 @@ interface EditTrackProps {
   onClose: () => void;
   // eslint-disable-next-line react/require-default-props
   trackId: number;
+  gameId: number;
 }
 
-const EditTrack: FC<EditTrackProps> = ({ isOpen, onClose, trackId }) => {
+const EditTrack: FC<EditTrackProps> = ({
+  isOpen,
+  onClose,
+  trackId,
+  gameId,
+}) => {
   const store = getStore();
-  const tracks = store.get('tracks');
+  const tracks = store.get('tracks')[gameId];
 
   const [value, setValue] = useState(
     trackId !== undefined && trackId !== -1 && tracks[trackId]
@@ -41,9 +47,11 @@ const EditTrack: FC<EditTrackProps> = ({ isOpen, onClose, trackId }) => {
     setValue(event.target.value);
 
   const handleEdit = () => {
+    console.log(gameId);
     window.electron.ipcRenderer.manageTrack(
       'manage-track',
       'edit',
+      gameId,
       trackId,
       value
     );
@@ -51,7 +59,12 @@ const EditTrack: FC<EditTrackProps> = ({ isOpen, onClose, trackId }) => {
   };
 
   const handleRemove = () => {
-    window.electron.ipcRenderer.manageTrack('manage-track', 'remove', trackId);
+    window.electron.ipcRenderer.manageTrack(
+      'manage-track',
+      'remove',
+      gameId,
+      trackId
+    );
     onClose();
   };
 

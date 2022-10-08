@@ -17,15 +17,10 @@ import {
 } from '@chakra-ui/react';
 import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import EditTrack from 'renderer/components/EditTrack';
+import { STATUS } from 'renderer/types';
 import { getAllGames } from '../../main/source/games';
 import YoutubeImport from '../components/YoutubeImport';
 import { getStore } from '../utils/store';
-
-enum STATUS {
-  IDLE,
-  SEARCHING,
-  WORKING,
-}
 
 const IndexPage: FC = () => {
   const store = getStore();
@@ -36,7 +31,7 @@ const IndexPage: FC = () => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [currentGame, setCurrentGame] = useState<number>(currentGameId);
   const [tracks, setTracks] = useState(
-    store.get('tracks').filter((track) => track.gameId === currentGameId)
+    store.get('tracks')[currentGameId] || []
   );
   const [loadedTrack, SetLoadedTrack] = useState<number | undefined>(undefined);
   const [selectedTrack, SetSelectedTrack] = useState<number>(-1);
@@ -79,9 +74,7 @@ const IndexPage: FC = () => {
 
   useEffect(() => {
     window.electron.ipcRenderer.on('update-tracks', () => {
-      setTracks(
-        store.get('tracks').filter((track) => track.gameId === currentGameId)
-      );
+      setTracks(store.get('tracks')[currentGameId] || []);
     });
 
     window.electron.ipcRenderer.on('start-files-injection-done', () => {
@@ -136,8 +129,13 @@ const IndexPage: FC = () => {
                   key={track.name}
                   _hover={{
                     background: 'gray.700',
+                    cursor: 'pointer',
                   }}
-                  onClick={() => handleOpenEditTrack(index)}
+                  onClick={(e) =>
+                    status !== STATUS.IDLE
+                      ? e.preventDefault()
+                      : handleOpenEditTrack(index)
+                  }
                 >
                   <Td>{loadedTrack === index ? 'Yes' : 'No'}</Td>
                   <Td>{track.name}</Td>
@@ -153,6 +151,7 @@ const IndexPage: FC = () => {
             <Button
               colorScheme="teal"
               onClick={() => inputFile.current?.click()}
+              disabled={status !== STATUS.IDLE}
             >
               Import
             </Button>
@@ -164,7 +163,7 @@ const IndexPage: FC = () => {
               style={{ display: 'none' }}
               onChange={handleFileChange}
             />
-            <YoutubeImport gameId={currentGameId} />
+            <YoutubeImport gameId={currentGameId} status={status} />
             <Button
               colorScheme={
                 // eslint-disable-next-line no-nested-ternary
@@ -189,7 +188,12 @@ const IndexPage: FC = () => {
           </ButtonGroup>
         </Flex>
       </Stack>
-      <EditTrack isOpen={isOpen} onClose={onClose} trackId={selectedTrack} />
+      <EditTrack
+        isOpen={isOpen}
+        onClose={onClose}
+        trackId={selectedTrack}
+        gameId={currentGame}
+      />
     </>
   );
 };

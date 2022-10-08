@@ -33,10 +33,11 @@ contextBridge.exposeInMainWorld('electron', {
     manageTrack(
       channel: 'manage-track',
       type: 'remove' | 'edit',
+      gameId: number,
       trackId: number,
       trackName?: string
     ): void {
-      ipcRenderer.send(channel, type, trackId, trackName);
+      ipcRenderer.send(channel, type, gameId, trackId, trackName);
     },
     on(channel: Channels, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>

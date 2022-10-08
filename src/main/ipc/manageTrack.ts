@@ -2,8 +2,8 @@ import { ipcMain } from 'electron';
 import fs from 'fs';
 import { store } from '../store';
 
-ipcMain.on('manage-track', (event, type, trackId, trackName) => {
-  const tracks = store.get('tracks');
+ipcMain.on('manage-track', (event, type, gameId, trackId, trackName) => {
+  const tracks = store.get('tracks')[gameId];
   const currentTrack = tracks[trackId];
 
   if (type === 'edit') {
@@ -15,7 +15,7 @@ ipcMain.on('manage-track', (event, type, trackId, trackName) => {
     };
 
     tracks[trackId] = newTrack;
-    store.set('tracks', tracks);
+    store.set(`tracks.${gameId}`, tracks);
     fs.renameSync(
       currentTrack.path,
       currentTrack.path.replace(currentTrack.name, trackName)
@@ -23,7 +23,7 @@ ipcMain.on('manage-track', (event, type, trackId, trackName) => {
   }
   if (type === 'remove') {
     tracks.splice(trackId, 1);
-    store.set('tracks', tracks);
+    store.set(`tracks.${gameId}`, tracks);
     fs.rmSync(currentTrack.path);
   }
   event.sender.send('update-tracks');
