@@ -26,6 +26,7 @@ jobs:
         id: check
         uses: EndBug/version-check@v2.1.0
         with:
+          diff-search: true
           file-name: ./release/app/package.json
 
       - name: Install Node and NPM
