@@ -21,18 +21,27 @@ jobs:
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v1
+        with:
+          file-name: release/app/package.json
+        
+      - name: Check if version has been updated
+        id: check
+        uses: EndBug/version-check@v1
 
       - name: Install Node and NPM
+        if: steps.check.outputs.changed == 'true'
         uses: actions/setup-node@v1
         with:
           node-version: 16
           cache: npm
-
+  
       - name: Install dependencies
+        if: steps.check.outputs.changed == 'true'
         run: |
           npm install
 
       - name: Publish releases
+        if: steps.check.outputs.changed == 'true'
         env:
           # These values are used for auto updates signing
           # APPLE_ID: ${{ secrets.APPLE_ID }}
