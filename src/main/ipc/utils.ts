@@ -2,18 +2,13 @@ import ffmpeg from 'fluent-ffmpeg';
 import internal from 'stream';
 import { store } from '../store';
 
-export const convertToWavAndInsert = (
-  currentFile: string | internal.Readable,
-  outputPath: string
-) => {
-  ffmpeg(currentFile)
-    .output(outputPath)
+export const getFfmpeg = (currentFile?: string | internal.Readable) => {
+  return ffmpeg(currentFile)
     .audioChannels(1)
     .audioCodec('pcm_s16le')
     .audioBitrate(16)
     .audioFrequency(22050)
-    .addOutputOptions('-fflags', '+bitexact')
-    .run();
+    .addOutputOptions('-fflags', '+bitexact');
 };
 
 export const updateStoreTracks = (

@@ -33,7 +33,7 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
 
   // look for new bind being set aka track being loaded
   watchConfigFileForChanges = setInterval(() => {
-    const relayPath = `${settings.steam_path}\\userdata\\${steamId}\\730\\local\\cfg\\sourcefm_relay.cfg`;
+    const relayPath = `${settings.steam_path}\\userdata\\${steamId}\\${gameId}\\local\\cfg\\sourcefm_relay.cfg`;
     try {
       const file = fs.readFileSync(relayPath);
       const regex = /bind\s+"(=)"\s+"(.*?)"/g;

@@ -47,7 +47,6 @@ const EditTrack: FC<EditTrackProps> = ({
     setValue(event.target.value);
 
   const handleEdit = () => {
-    console.log(gameId);
     window.electron.ipcRenderer.manageTrack(
       'manage-track',
       'edit',

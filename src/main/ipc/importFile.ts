@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import path from 'path';
-import { convertToWavAndInsert, updateStoreTracks } from './utils';
+import { getFfmpeg, updateStoreTracks } from './utils';
 
 ipcMain.on(
   'import-file',
@@ -11,7 +11,7 @@ ipcMain.on(
     fileName = fileName.replace(path.extname(file.name), '.wav');
     outputPath = outputPath.replace(path.extname(file.name), '.wav');
 
-    convertToWavAndInsert(file.path, outputPath);
+    getFfmpeg(file.path).output(outputPath).run();
     updateStoreTracks(fileName, file.gameId, outputPath, event);
   }
 );

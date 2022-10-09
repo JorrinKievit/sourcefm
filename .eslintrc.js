@@ -12,6 +12,7 @@ module.exports = {
       'always',
       { exceptAfterSingleLine: true },
     ],
+    'promise/always-return': { ignoreLastCallback: true },
   },
   parserOptions: {
     ecmaVersion: 2020,
