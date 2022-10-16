@@ -1,7 +1,11 @@
 import { ipcMain } from 'electron';
 import child_process from 'child_process';
 import fs from 'fs';
-import { writeSourceFMCfg, writeTracklistCfg } from '../source/cfgWriter';
+import {
+  writeCurrentTrackCfg,
+  writeSourceFMCfg,
+  writeTracklistCfg,
+} from '../source/cfgWriter';
 import { store } from '../store';
 
 let watchConfigFileForChanges: ReturnType<typeof setInterval>;
@@ -49,9 +53,9 @@ ipcMain.on('start-files-injection', async (event, gameId) => {
         const tracks = store.get('tracks')[gameId];
         const track = tracks.find((_t, i) => i === trackIndex - 1);
 
-        event.sender.send('track-loaded', trackIndex - 1);
-
         if (track) {
+          event.sender.send('track-loaded', trackIndex - 1);
+          writeCurrentTrackCfg(gameId, track.name);
           fs.copyFileSync(track.path, `${settings.csgo_path}\\voice_input.wav`);
         }
       }
