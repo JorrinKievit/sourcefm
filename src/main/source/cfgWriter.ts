@@ -2,6 +2,12 @@ import fs from 'fs';
 import { store } from '../store';
 import { getAllGames } from './games';
 
+const cfgs = [
+  ['echo', 'sourcefm_curtrack'],
+  ['say', 'sourcefm_saycurtrack'],
+  ['say_team', 'sourcefm_sayteamcurtrack'],
+];
+
 export const writeSourceFMCfg = (gameId: number) => {
   const tracks = store.get('tracks')[gameId];
   const game = getAllGames().find((val) => val.id === gameId);
@@ -30,6 +36,12 @@ export const writeSourceFMCfg = (gameId: number) => {
   );
   sourceFMCfg.write(
     'alias sourcefm_sayteamcurtrack "exec sourcefm_sayteamcurtrack.cfg"\n'
+  );
+  sourceFMCfg.write(
+    `bind ${settings.saycurtrack_button.toUpperCase()} sourcefm_saycurtrack\n`
+  );
+  sourceFMCfg.write(
+    `bind ${settings.sayteamcurtrack_button.toUpperCase()} sourcefm_sayteamcurtrack\n`
   );
 
   tracks.forEach((track, i) => {
@@ -70,4 +82,19 @@ export const writeTracklistCfg = (gameId: number) => {
     );
   });
   sourceTracklistCfg.end();
+};
+
+export const writeCurrentTrackCfg = (gameId: number, trackName: string) => {
+  const settings = store.get('settings');
+  const game = getAllGames().find((val) => val.id === gameId);
+
+  cfgs.forEach((cfg) => {
+    const sourceCurTrackCfg = fs.createWriteStream(
+      `${settings.csgo_path}\\${game?.toCfg}\\${cfg[1]}.cfg`
+    );
+    sourceCurTrackCfg.write(
+      `${cfg[0]} "(SourceFM) Now Playing: ${trackName}"\n`
+    );
+    sourceCurTrackCfg.end();
+  });
 };

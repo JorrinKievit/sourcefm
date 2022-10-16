@@ -6,40 +6,69 @@ import {
   Td,
   Tr,
   Button,
-  Flex,
-  Spacer,
+  Stack,
+  Box,
 } from '@chakra-ui/react';
-import { ChangeEvent, FC, useState } from 'react';
+import { StoreSchema } from 'main/store';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { getStore } from '../utils/store';
+
+type SettingsType = {
+  id: keyof StoreSchema['settings'];
+  name: string;
+};
+
+const SETTINGS: SettingsType[] = [
+  {
+    id: 'csgo_path',
+    name: 'CSGO Path',
+  },
+  {
+    id: 'steam_path',
+    name: 'Steam path',
+  },
+  {
+    id: 'play_button',
+    name: 'Play Button',
+  },
+  {
+    id: 'saycurtrack_button',
+    name: 'Say Current Track Button',
+  },
+  {
+    id: 'sayteamcurtrack_button',
+    name: 'Say Team Current Track Button',
+  },
+];
 
 const SettingsPage: FC = () => {
   const store = getStore();
   const storeSettings = store.get('settings');
-  const [playButton, setPlayButton] = useState(storeSettings.play_button);
-  const [path, setPath] = useState(storeSettings.csgo_path);
+
+  const [settings, setSettings] =
+    useState<StoreSchema['settings']>(storeSettings);
+  const [isEqual, setIsEqual] = useState(true);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    switch (e.target.id) {
-      case 'play_button':
-        setPlayButton(e.target.value);
-        break;
-      case 'csgo_path':
-        setPath(e.target.value);
-        break;
-      default:
-        break;
-    }
+    setSettings({
+      ...settings,
+      [e.target.id]: e.target.value,
+    });
   };
 
   const handleClick = () => {
     store.set('settings', {
-      play_button: playButton,
-      csgo_path: path,
+      ...settings,
     });
+    setIsEqual(true);
   };
 
+  useEffect(() => {
+    setIsEqual(JSON.stringify(storeSettings) === JSON.stringify(settings));
+  }, [storeSettings, settings]);
+
   return (
-    <>
+    <Stack>
       <TableContainer
         border="1px"
         borderRadius="12px"
@@ -47,37 +76,32 @@ const SettingsPage: FC = () => {
       >
         <Table variant="simple">
           <Tbody>
-            <Tr>
-              <Td>Play button</Td>
-              <Td>
-                <Flex gap={4}>
+            {SETTINGS.map((setting) => (
+              <Tr key={setting.id}>
+                <Td width="30%">{setting.name}</Td>
+                <Td width="70%">
                   <Input
-                    id="play_button"
-                    defaultValue={playButton}
+                    id={setting.id}
+                    value={settings[setting.id]}
                     onChange={handleChange}
                   />
-                  <Spacer />
-                  <Button colorScheme="green" onClick={handleClick}>
-                    Save
-                  </Button>
-                </Flex>
-              </Td>
-            </Tr>
-            <Tr>
-              <Td>CSGO Path</Td>
-              <Td>
-                <Flex gap={4}>
-                  <Input id="csgo_path" value={path} onChange={handleChange} />
-                  <Button colorScheme="green" onClick={handleClick}>
-                    Save
-                  </Button>
-                </Flex>
-              </Td>
-            </Tr>
+                </Td>
+              </Tr>
+            ))}
           </Tbody>
         </Table>
+        <Box w="full" display="flex" p={4}>
+          <Button
+            colorScheme="green"
+            onClick={handleClick}
+            ml="auto"
+            disabled={isEqual}
+          >
+            Save
+          </Button>
+        </Box>
       </TableContainer>
-    </>
+    </Stack>
   );
 };
 

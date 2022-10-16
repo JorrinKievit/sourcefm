@@ -25,4 +25,5 @@ export const cleanUp = () => {
 
     fs.rmSync(filePath, { force: true });
   });
+  fs.rmSync(`${csgoPath}\\voice_input.wav`, { force: true });
 };
