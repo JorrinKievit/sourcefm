@@ -6,8 +6,6 @@ import {
   Td,
   Tr,
   Button,
-  Flex,
-  Spacer,
   Stack,
   Box,
 } from '@chakra-ui/react';
