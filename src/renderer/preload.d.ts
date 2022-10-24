@@ -1,5 +1,6 @@
 import { StoreSchema } from 'main/store';
 import Store from 'electron-store';
+import { Channels } from 'types';
 
 declare global {
   interface Window {
@@ -30,6 +31,7 @@ declare global {
           func: (...args: unknown[]) => void
         ): (() => void) | undefined;
         once(channel: string, func: (...args: unknown[]) => void): void;
+        removeAllEventListeners(channel: Channels): void;
       };
       store: Store<StoreSchema>;
     };

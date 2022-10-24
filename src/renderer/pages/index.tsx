@@ -78,6 +78,7 @@ const IndexPage: FC = () => {
     });
 
     window.electron.ipcRenderer.on('start-files-injection-done', () => {
+      console.log('start-files-injection-done');
       setStatus(STATUS.WORKING);
       toast({
         title: 'Imported into the game',
@@ -93,6 +94,14 @@ const IndexPage: FC = () => {
     window.electron.ipcRenderer.on('track-loaded', (trackIndex) => {
       SetLoadedTrack(trackIndex as number);
     });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllEventListeners('update-tracks');
+      window.electron.ipcRenderer.removeAllEventListeners(
+        'start-files-injection-done'
+      );
+      window.electron.ipcRenderer.removeAllEventListeners('track-loaded');
+    };
   }, [store, currentGameId, toast]);
 
   return (
@@ -127,10 +136,14 @@ const IndexPage: FC = () => {
               {tracks.map((track, index) => (
                 <Tr
                   key={track.name}
-                  _hover={{
-                    background: 'gray.700',
-                    cursor: 'pointer',
-                  }}
+                  _hover={
+                    status === STATUS.IDLE
+                      ? {
+                          background: 'gray.700',
+                          cursor: 'pointer',
+                        }
+                      : undefined
+                  }
                   onClick={(e) =>
                     status !== STATUS.IDLE
                       ? e.preventDefault()

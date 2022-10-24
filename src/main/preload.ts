@@ -1,11 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-
-export type Channels =
-  | 'import-file'
-  | 'start-files-injection'
-  | 'import-youtube'
-  | 'clean-up'
-  | 'manage-track';
+import { Channels } from 'types';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -48,6 +42,9 @@ contextBridge.exposeInMainWorld('electron', {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    removeAllEventListeners(channel: Channels) {
+      ipcRenderer.removeAllListeners(channel);
     },
   },
   store: {
