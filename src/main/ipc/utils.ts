@@ -1,6 +1,9 @@
 import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from 'ffmpeg-static-electron';
 import internal from 'stream';
 import { store } from '../store';
+
+ffmpeg.setFfmpegPath(ffmpegStatic.path);
 
 export const getFfmpeg = (currentFile?: string | internal.Readable) => {
   return ffmpeg(currentFile)

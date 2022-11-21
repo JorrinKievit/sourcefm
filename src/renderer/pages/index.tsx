@@ -112,8 +112,9 @@ const IndexPage: FC = () => {
           border="1px"
           borderRadius="12px"
           borderColor="chakra-border-color"
-          maxH={300}
-          overflow="auto"
+          maxH={430}
+          overflowX="auto"
+          overflowY="auto"
         >
           <Table variant="simple">
             <Thead>
