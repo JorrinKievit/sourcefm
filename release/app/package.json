@@ -1,6 +1,6 @@
 {
   "name": "sourcefm",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A music player for source based games",
   "license": "MIT",
   "author": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
     "registry-js": "^1.15.1",
-    "steam-game-path": "^2.2.0"
+    "steam-game-path": "^2.2.0",
+    "ffmpeg-static-electron": "^2.0.3"
   }
 }

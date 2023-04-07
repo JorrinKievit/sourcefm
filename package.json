@@ -1,6 +1,6 @@
 {
   "description": "A music player for source based games",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "author": {
     "name": "Jorrin Kievit",
@@ -90,12 +90,11 @@
     "electron-log": "^4.4.7",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.0.3",
-    "ffmpeg-static-electron": "^2.0.3",
     "framer-motion": "^7.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "ytdl-core": "^4.11.2",
+    "ytdl-core": "^4.9.1",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
@@ -169,7 +168,6 @@
     "productName": "SourceFM",
     "appId": "org.erb.SourceFM",
     "asar": true,
-    "asarUnpack": "**\\*.{node,dll}",
     "files": [
       "dist",
       "node_modules",

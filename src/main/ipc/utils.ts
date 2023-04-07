@@ -3,7 +3,9 @@ import ffmpegStatic from 'ffmpeg-static-electron';
 import internal from 'stream';
 import { store } from '../store';
 
-ffmpeg.setFfmpegPath(ffmpegStatic.path);
+ffmpeg.setFfmpegPath(
+  ffmpegStatic.path.replace('app.asar', 'app.asar.unpacked')
+);
 
 export const getFfmpeg = (currentFile?: string | internal.Readable) => {
   return ffmpeg(currentFile)
